@@ -1,7 +1,6 @@
 package g8row;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 
 import java.net.URL;
 import java.util.Date;
@@ -28,6 +27,7 @@ class Tags{
 
 }
 class MangaAtributes{
+	String title;
     Map<String,String> altTitles;
     boolean isLocked;
     Links links;
@@ -46,11 +46,10 @@ class MangaAtributes{
 public class Manga {
     String id;
     String type;
-    String title;
+    
     public Manga(String id, String type, String title, Map<String, String> altTitles, boolean isLocked, Links links, String originalLanguage, int lastVolume, int lastChapter, String publicationDemographic, String status, int year, String contentRating, Tags tags, Date createdAt, Date updatedAt, Relationship[] relationships) {
         this.id = id;
         this.type = type;
-        this.title = title;
     }
 
     public Manga() {
