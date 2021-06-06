@@ -1,2 +1,0 @@
-# manyak
-the definitive app
