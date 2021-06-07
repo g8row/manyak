@@ -2,9 +2,20 @@ package g8row;
 
 
 
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.xml.registry.JAXRException;
+import javax.xml.registry.infomodel.LocalizedString;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 
 class Descriptions {
 
@@ -26,14 +37,15 @@ class Relationship {
 class Tags{
 
 }
-class MangaAtributes{
+class MangaAttributes{
 	String title;
     Map<String,String> altTitles;
+    String description;
     boolean isLocked;
     Links links;
     String originalLanguage;
-    int lastVolume;
-    int lastChapter;
+    String lastVolume;
+    String lastChapter;
     String publicationDemographic;
     String status;
     int year;
@@ -42,24 +54,112 @@ class MangaAtributes{
     Date createdAt;
     Date updatedAt;
     Relationship[] relationships;
-}
-public class Manga {
-    String id;
-    String type;
-    
-    public Manga(String id, String type) {
-        this.id = id;
-        this.type = type;
+    public MangaAttributes(JSONObject title, JSONArray altTitles, JSONObject description, boolean isLocked, String originalLanguage, String lastVolume, String lastChapter,
+                          String publicationDemographic, String status, String contentRating, String createdAt, String updatedAt) {
+        this.title = parseTitle(title);
+        parseArray(altTitles,this.altTitles=new HashMap<>());
+        //this.description = description.toString();
+        this.isLocked = isLocked;
+        //this.links=links;
+        this.originalLanguage = originalLanguage;
+        this.lastVolume = lastVolume;
+        this.lastChapter = lastChapter;
+        this.publicationDemographic = publicationDemographic;
+        this.status = status;
+        //this.year=year;
+        this.contentRating = contentRating;
+        //this.tags = tags;
+        this.createdAt = Date.from(Instant.parse(createdAt));
+        this.updatedAt = Date.from(Instant.parse(updatedAt));
+        //this.relationships = relationships;
     }
-
-    public Manga() {
+    public String parseTitle(JSONObject titleObj){
+        return titleObj.toString().substring(7, titleObj.toString().length() - 2);
+    }
+    public void parseArray(JSONArray array, Map<String,String> map){
+        for (int i = 0;i<array.length();i++) {
+            JSONObject titleObj = array.getJSONObject(i);
+            String lang = titleObj.toString().substring(2, 4);
+            String title = titleObj.toString().substring(7, titleObj.toString().length() - 2);
+            map.put(title,lang);
+        }
     }
 
     @Override
     public String toString() {
+        return "MangaAttributes{" +
+                "title='" + title + '\'' +
+                ", altTitles=" + altTitles +
+                ", description='" + description + '\'' +
+                ", isLocked=" + isLocked +
+                ", links=" + links +
+                ", originalLanguage='" + originalLanguage + '\'' +
+                ", lastVolume='" + lastVolume + '\'' +
+                ", lastChapter='" + lastChapter + '\'' +
+                ", publicationDemographic='" + publicationDemographic + '\'' +
+                ", status='" + status + '\'' +
+                ", year=" + year +
+                ", contentRating='" + contentRating + '\'' +
+                ", tags=" + tags +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", relationships=" + Arrays.toString(relationships) +
+                '}';
+    }
+}
+public class Manga {
+    String id;
+    String type;
+    MangaAttributes mangaAttributes;
+    ArrayList<String> fileNames;
+    public Manga(String id, String type, MangaAttributes mangaAtributes) throws IOException {
+        this.id = id;
+        this.type = type;
+        this.mangaAttributes = mangaAtributes;
+        getCovers();
+    }
+
+    public void getCovers() throws IOException {
+        BufferedReader reader;
+        HttpURLConnection connection;
+        StringBuilder responseContent = new StringBuilder();
+        fileNames = new ArrayList<>();
+        String link ="https://api.mangadex.org/cover?limit=3&manga[]="+id+"";
+        URL url = new URL(link);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        if(connection.getResponseCode() > 299){
+            reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            String line;
+            while ((line = reader.readLine())!=null){
+                responseContent.append(line);
+            }
+            reader.close();
+        }else{
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = reader.readLine())!=null){
+                responseContent.append(line);
+            }
+            reader.close();
+        }
+        JSONObject mangaResponse = new JSONObject(responseContent.toString());
+        JSONArray mangaArray = mangaResponse.getJSONArray("results");
+        for (int i = 0;i<mangaArray.length();i++){
+            fileNames.add(mangaArray.getJSONObject(i).getJSONObject("data").getJSONObject("attributes").getString("fileName"));
+        }
+    }
+
+
+    @Override
+    public String toString() {
         return "Manga{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", type='" + type + '\'' +
+                ", mangaAtributes=" + mangaAttributes +
                 '}';
     }
 }
