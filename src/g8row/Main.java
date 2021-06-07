@@ -44,6 +44,7 @@ public class Main {
                 .thenAccept(System.out::println)
                 .join();
         System.out.println(responseContent);*/
-        MangaList.parse(responseContent.toString());
+        MangaList list = new MangaList(responseContent.toString());
+        System.out.print(list.mangaArray.get(0));
     }
 }

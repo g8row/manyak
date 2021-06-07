@@ -47,7 +47,7 @@ public class Manga {
     String id;
     String type;
     
-    public Manga(String id, String type, String title, Map<String, String> altTitles, boolean isLocked, Links links, String originalLanguage, int lastVolume, int lastChapter, String publicationDemographic, String status, int year, String contentRating, Tags tags, Date createdAt, Date updatedAt, Relationship[] relationships) {
+    public Manga(String id, String type) {
         this.id = id;
         this.type = type;
     }
@@ -55,5 +55,11 @@ public class Manga {
     public Manga() {
     }
 
-
+    @Override
+    public String toString() {
+        return "Manga{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
