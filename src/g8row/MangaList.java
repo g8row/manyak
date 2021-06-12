@@ -5,11 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -32,15 +30,14 @@ public class MangaList {
             while ((line = reader.readLine())!=null){
                 responseContent.append(line);
             }
-            reader.close();
         }else{
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = reader.readLine())!=null){
                 responseContent.append(line);
             }
-            reader.close();
         }
+        reader.close();
         JSONObject mangaResponse = new JSONObject(responseContent.toString());
         JSONArray mangaList = mangaResponse.getJSONArray("results");
         for (int i=0;i<mangaList.length();i++) {
@@ -56,17 +53,17 @@ public class MangaList {
             JSONObject description;//USE QUEUE
             boolean isLocked;
             String originalLanguage;
-            JSONObject links;//i think this gotta be a map?
+            //JSONObject links;//i think this gotta be a map?
             String lastVolume = null;//make it nullable(aka it can be null)
             String lastChapter = null;//make it nullable(aka it can be null)
             String publicationDemographic = null;//make it nullable(aka it can be null)
             String status = null;//make it nullable(aka it can be null)
             int year = 0;//make it nullable(aka it can be null)
             String contentRating = null;//make it nullable(aka it can be null)
-            JSONArray tags;//you gotta make a tag class
+            //JSONArray tags;//you gotta make a tag class
             String createdAt;
             String updatedAt;
-            JSONArray relationships;//gotta make a relationship class with id and type and make it an array
+            //JSONArray relationships;//gotta make a relationship class with id and type and make it an array
 
             mangaAttributes = mangaData.getJSONObject("attributes");
 
@@ -76,7 +73,7 @@ public class MangaList {
             Descriptions descriptions = new Descriptions(description);
             isLocked = mangaAttributes.getBoolean("isLocked");
             originalLanguage = mangaAttributes.getString("originalLanguage");
-            links = mangaAttributes.getJSONObject("links");
+            //links = mangaAttributes.getJSONObject("links");
             try {
                 lastVolume = mangaAttributes.getString("lastVolume");
             } catch (JSONException e) {
@@ -98,7 +95,7 @@ public class MangaList {
                 //e.printStackTrace();
             }
             try {
-                year = mangaAttributes.getInt("year");
+                //year = mangaAttributes.getInt("year");
             } catch (JSONException e) {
                 //e.printStackTrace();
             } catch (NumberFormatException n) {
@@ -109,12 +106,12 @@ public class MangaList {
             } catch (JSONException e) {
                 //e.printStackTrace();
             }
-            tags = mangaAttributes.getJSONArray("tags");
+            //tags = mangaAttributes.getJSONArray("tags");
             int version;
             version = mangaAttributes.getInt("version");
             createdAt = mangaAttributes.getString("createdAt");
             updatedAt = mangaAttributes.getString("updatedAt");
-            relationships = manga.getJSONArray("relationships");
+            //relationships = manga.getJSONArray("relationships");
             int limit = mangaResponse.getInt("limit");
             int offset = mangaResponse.getInt("offset");
 

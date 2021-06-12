@@ -165,15 +165,14 @@ public class Manga {
             while ((line = reader.readLine())!=null){
                 responseContent.append(line);
             }
-            reader.close();
         }else{
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = reader.readLine())!=null){
                 responseContent.append(line);
             }
-            reader.close();
         }
+        reader.close();
         JSONObject mangaResponse = new JSONObject(responseContent.toString());
         JSONArray mangaArray = mangaResponse.getJSONArray("results");
         String fileName = mangaArray.getJSONObject(0).getJSONObject("data").getJSONObject("attributes").getString("fileName");

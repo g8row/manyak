@@ -19,7 +19,7 @@ import java.util.PriorityQueue;
 public class GUI extends JFrame{
     final JPanel gui = new JPanel();
     MangaList mangaList;
-    CardLayout cardLayout = new CardLayout();
+    CardLayout cardLayout;
     public static final int WIDTH = 600, HEIGHT = 600;
 
     public GUI(MangaList mangaList) {
@@ -28,9 +28,16 @@ public class GUI extends JFrame{
         revalidate();
     }
 
-
+    public GUI (){
+        setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - WIDTH) / 2, ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - HEIGHT) / 2, WIDTH, HEIGHT);
+        setVisible(true);
+        setLayout(new GridLayout(1,1));
+        add(new JLabel("loading...",SwingConstants.CENTER));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
 
     public void create() {
+        cardLayout = new CardLayout();
         gui.setLayout(cardLayout);
         JPanel menu = new TestListGUI(mangaList);
         gui.add(menu, "menu");
