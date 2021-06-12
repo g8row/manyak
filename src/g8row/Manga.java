@@ -5,6 +5,8 @@ package g8row;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,8 +16,35 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 
-class Descriptions {
+class Descriptions extends HashMap<String,Object>{
+    JSONObject descriptionsJSON;
+    public Descriptions(JSONObject descriptionsJSON) {
+        this.descriptionsJSON = descriptionsJSON;
+        for(Map.Entry<String,Object> temp: descriptionsJSON.toMap().entrySet()){
+            String value = (String) temp.getValue();
+            value = value.replace('[','<');
+            value = value.replace(']','>');
+            value = value.replace("url", "a href");
+            value = value.replace("<spoiler>", "");
+            value = value.replace("</spoiler>", "");
+            if(value.lastIndexOf("Portuguese (BR) / Português (BR)")>-1){
+                put("br",value.substring(value.lastIndexOf("Portuguese (BR) / Português (BR)")+32));
+                value = value.substring(0,value.lastIndexOf("Portuguese (BR) / Português (BR)"));
+            }
+            put(temp.getKey(),value);
+        }
 
+    }
+    /*@Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        for(String key:keySet()){
+            str.append(key).append(' ');
+        }
+        return str.toString();
+    }
+
+     */
 }
 class Links {
     int al;
@@ -37,7 +66,7 @@ class Tags{
 class MangaAttributes{
 	String title;
     Map<String,String> altTitles;
-    String description;
+    public Descriptions descriptions;
     boolean isLocked;
     Links links;
     String originalLanguage;
@@ -51,11 +80,11 @@ class MangaAttributes{
     Date createdAt;
     Date updatedAt;
     Relationship[] relationships;
-    public MangaAttributes(JSONObject title, JSONArray altTitles, JSONObject description, boolean isLocked, String originalLanguage, String lastVolume, String lastChapter,
+    public MangaAttributes(JSONObject title, JSONArray altTitles, Descriptions descriptions, boolean isLocked, String originalLanguage, String lastVolume, String lastChapter,
                           String publicationDemographic, String status, String contentRating, String createdAt, String updatedAt) {
         this.title = parseTitle(title);
         parseArray(altTitles,this.altTitles=new HashMap<>());
-        //this.description = description.toString();
+        this.descriptions = descriptions;
         this.isLocked = isLocked;
         //this.links=links;
         this.originalLanguage = originalLanguage;
@@ -87,7 +116,7 @@ class MangaAttributes{
         return "MangaAttributes{" +
                 "title='" + title + '\'' +
                 ", altTitles=" + altTitles +
-                ", description='" + description + '\'' +
+                ", description='" + descriptions + '\'' +
                 ", isLocked=" + isLocked +
                 ", links=" + links +
                 ", originalLanguage='" + originalLanguage + '\'' +
@@ -108,20 +137,22 @@ public class Manga {
     String id;
     String type;
     MangaAttributes mangaAttributes;
-    ArrayList<String> fileNames;
+    BufferedImage cover;
+
+
     public Manga(String id, String type, MangaAttributes mangaAtributes) throws IOException {
         this.id = id;
         this.type = type;
         this.mangaAttributes = mangaAtributes;
-        getCovers();
+        cover = getCover();
     }
 
-    public void getCovers() throws IOException {
+    public BufferedImage getCover() throws IOException {
         BufferedReader reader;
         HttpURLConnection connection;
         StringBuilder responseContent = new StringBuilder();
-        fileNames = new ArrayList<>();
-        String link ="https://api.mangadex.org/cover?limit=3&manga[]="+id+"";
+
+        String link ="https://api.mangadex.org/cover?limit=1&manga[]="+id+"";
         URL url = new URL(link);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -145,9 +176,9 @@ public class Manga {
         }
         JSONObject mangaResponse = new JSONObject(responseContent.toString());
         JSONArray mangaArray = mangaResponse.getJSONArray("results");
-        for (int i = 0;i<mangaArray.length();i++){
-            fileNames.add(mangaArray.getJSONObject(i).getJSONObject("data").getJSONObject("attributes").getString("fileName"));
-        }
+        String fileName = mangaArray.getJSONObject(0).getJSONObject("data").getJSONObject("attributes").getString("fileName");
+        url = new URL("https://uploads.mangadex.org/covers/" + id + '/' + fileName+".256.jpg");
+        return ImageIO.read(url);
     }
 
 

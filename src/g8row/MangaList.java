@@ -52,8 +52,8 @@ public class MangaList {
 
             JSONObject mangaAttributes;
             JSONObject title;
-            JSONArray altTitles;//you need to make this into an javax.xml.registry.infomodel.LocalizedString array
-            JSONObject description;//you need to make this into an javax.xml.registry.infomodel.LocalizedString array
+            JSONArray altTitles;
+            JSONObject description;//USE QUEUE
             boolean isLocked;
             String originalLanguage;
             JSONObject links;//i think this gotta be a map?
@@ -73,6 +73,7 @@ public class MangaList {
             title = mangaAttributes.getJSONObject("title");
             altTitles = mangaAttributes.getJSONArray("altTitles");
             description = mangaAttributes.getJSONObject("description");
+            Descriptions descriptions = new Descriptions(description);
             isLocked = mangaAttributes.getBoolean("isLocked");
             originalLanguage = mangaAttributes.getString("originalLanguage");
             links = mangaAttributes.getJSONObject("links");
@@ -117,7 +118,7 @@ public class MangaList {
             int limit = mangaResponse.getInt("limit");
             int offset = mangaResponse.getInt("offset");
 
-            MangaAttributes Attributes = new MangaAttributes(title, altTitles, description, isLocked, originalLanguage,
+            MangaAttributes Attributes = new MangaAttributes(title, altTitles, descriptions, isLocked, originalLanguage,
                     lastVolume, lastChapter, publicationDemographic, status, contentRating, createdAt, updatedAt);
 
             mangaArray.add(new Manga(id, type, Attributes));
