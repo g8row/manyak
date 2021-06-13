@@ -1,5 +1,8 @@
 package g8row;
 
+import designs.GButton;
+import designs.RoundedBorder;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
@@ -15,33 +18,38 @@ public class ShowManga extends JPanel {
 
         add(new JLabel(new ImageIcon(manga.cover.getScaledInstance(100, 150, Image.SCALE_FAST))));
         jTextPane = new JTextPane();
+        jTextPane.setContentType("text/html");
         buttons = new JPanel();
         for (String key : manga.mangaAttributes.descriptions.keySet()) {
             if (manga.mangaAttributes.descriptions.get(key) != null) {
-                JButton jButton = new JButton(key);
-                jButton.addActionListener(new ActionListener() {
+                GButton descB = new GButton(key);
+                descB.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         jTextPane.setText("");
-                        jTextPane.setPreferredSize(new Dimension(400, 400));
-                        jTextPane.setContentType("text/html");
-                        jTextPane.setText(null);
                         HTMLDocument doc = (HTMLDocument) jTextPane.getStyledDocument();
                         try {
                             doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), (String) manga.mangaAttributes.descriptions.get(key));
                         } catch (BadLocationException | IOException ex) {
                             ex.printStackTrace();
                         }
+                        jTextPane.setCaretPosition(0);
                     }
                 });
-                buttons.add(jButton);
+                buttons.add(descB);
             }
+        }
+        HTMLDocument doc = (HTMLDocument) jTextPane.getStyledDocument();
+        try {
+            doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), (String) manga.mangaAttributes.descriptions.get("en"));
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
         }
         JScrollPane jScrollPane = new JScrollPane(jTextPane);
         jScrollPane.setPreferredSize(new Dimension(400, 400));
         add(buttons);
         add(jScrollPane);
-        JButton backButton = new JButton("Back");
+        GButton backButton = new GButton("Back");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

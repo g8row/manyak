@@ -14,11 +14,11 @@ import java.util.ArrayList;
 public class MangaList {
     ArrayList<Manga> mangaArray;
 
-    public void parse() throws IOException {
+    public void parse(int limit, int offset) throws IOException {
         BufferedReader reader;
         HttpURLConnection connection;
         StringBuilder responseContent = new StringBuilder();
-        URL url = new URL("https://api.mangadex.org/manga?limit=5");
+        URL url = new URL("https://api.mangadex.org/manga?limit=" + limit + "&offset=" + offset);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);
@@ -112,8 +112,8 @@ public class MangaList {
             createdAt = mangaAttributes.getString("createdAt");
             updatedAt = mangaAttributes.getString("updatedAt");
             //relationships = manga.getJSONArray("relationships");
-            int limit = mangaResponse.getInt("limit");
-            int offset = mangaResponse.getInt("offset");
+            //int limit = mangaResponse.getInt("limit");
+            //int offset = mangaResponse.getInt("offset");
 
             MangaAttributes Attributes = new MangaAttributes(title, altTitles, descriptions, isLocked, originalLanguage,
                     lastVolume, lastChapter, publicationDemographic, status, contentRating, createdAt, updatedAt);
@@ -124,6 +124,6 @@ public class MangaList {
 
     public MangaList() throws IOException {
         mangaArray = new ArrayList<>();
-        parse();
+        parse(5,0);
     }
 }

@@ -21,16 +21,28 @@ class Descriptions extends HashMap<String,Object>{
     public Descriptions(JSONObject descriptionsJSON) {
         this.descriptionsJSON = descriptionsJSON;
         for(Map.Entry<String,Object> temp: descriptionsJSON.toMap().entrySet()){
-            String value = (String) temp.getValue();
+            String value = "<p style=\"font-family:tahoma\">";
+            value = value + (String) temp.getValue();
+            value = value.replace("[spoiler]", "");
+            value = value.replace("[/spoiler]", "");
+            value = value.replace("[*]","");
+            value = value.replace("[hr]","<p style=\"font-family:tahoma\">");
             value = value.replace('[','<');
             value = value.replace(']','>');
             value = value.replace("url", "a href");
-            value = value.replace("<spoiler>", "");
-            value = value.replace("</spoiler>", "");
+
+
+
             if(value.lastIndexOf("Portuguese (BR) / Português (BR)")>-1){
-                put("br",value.substring(value.lastIndexOf("Portuguese (BR) / Português (BR)")+32));
+                put("br","<p style=\"font-family:tahoma\">" + value.substring(value.lastIndexOf("Portuguese (BR) / Português (BR)")+32) + "</p>");
                 value = value.substring(0,value.lastIndexOf("Portuguese (BR) / Português (BR)"));
             }
+            if(value.lastIndexOf("PL")>-1){
+                put("pl","<p style=\"font-family:tahoma\">" + value.substring(value.lastIndexOf("PL")+2) + "</p>");
+                value = value.substring(0,value.lastIndexOf("PL"));
+            }
+            value = value + "</p>";
+            //System.out.println(value);
             put(temp.getKey(),value);
         }
 
