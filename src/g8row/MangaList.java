@@ -50,16 +50,16 @@ public class MangaList {
             JSONObject mangaAttributes;
             JSONObject title;
             JSONArray altTitles;
-            JSONObject description;//USE QUEUE
+            JSONObject description;
             boolean isLocked;
             String originalLanguage;
             //JSONObject links;//i think this gotta be a map?
-            String lastVolume = null;//make it nullable(aka it can be null)
-            String lastChapter = null;//make it nullable(aka it can be null)
-            String publicationDemographic = null;//make it nullable(aka it can be null)
-            String status = null;//make it nullable(aka it can be null)
-            int year = 0;//make it nullable(aka it can be null)
-            String contentRating = null;//make it nullable(aka it can be null)
+            String lastVolume;//make it nullable(aka it can be null)
+            String lastChapter;//make it nullable(aka it can be null)
+            String publicationDemographic;//make it nullable(aka it can be null)
+            String status;//make it nullable(aka it can be null)
+            int year;//make it nullable(aka it can be null)
+            String contentRating;//make it nullable(aka it can be null)
             //JSONArray tags;//you gotta make a tag class
             String createdAt;
             String updatedAt;
@@ -71,40 +71,42 @@ public class MangaList {
             altTitles = mangaAttributes.getJSONArray("altTitles");
             description = mangaAttributes.getJSONObject("description");
             Descriptions descriptions = new Descriptions(description);
-            isLocked = mangaAttributes.getBoolean("isLocked");
+            try{
+                isLocked = mangaAttributes.getBoolean("isLocked");
+            }catch (JSONException e){
+                isLocked = false;
+            }
             originalLanguage = mangaAttributes.getString("originalLanguage");
             //links = mangaAttributes.getJSONObject("links");
             try {
                 lastVolume = mangaAttributes.getString("lastVolume");
             } catch (JSONException e) {
-                //e.printStackTrace();
+                lastVolume = null;
             }
             try {
                 lastChapter = mangaAttributes.getString("lastChapter");
             } catch (JSONException e) {
-                //e.printStackTrace();
+                lastChapter = null;
             }
             try {
                 publicationDemographic = mangaAttributes.getString("publicationDemographic");
             } catch (JSONException e) {
-                //e.printStackTrace();
+                publicationDemographic = null;
             }
             try {
                 status = mangaAttributes.getString("status");
             } catch (JSONException e) {
-                //e.printStackTrace();
+                status = null;
             }
             try {
-                //year = mangaAttributes.getInt("year");
-            } catch (JSONException e) {
-                //e.printStackTrace();
-            } catch (NumberFormatException n) {
-                //n.printStackTrace();
+                year = mangaAttributes.getInt("year");
+            } catch (JSONException | NumberFormatException e) {
+                year = 0;
             }
             try {
                 contentRating = mangaAttributes.getString("contentRating");
             } catch (JSONException e) {
-                //e.printStackTrace();
+                contentRating = null;
             }
             //tags = mangaAttributes.getJSONArray("tags");
             int version;

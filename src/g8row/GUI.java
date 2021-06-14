@@ -2,6 +2,7 @@ package g8row;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
@@ -22,17 +23,28 @@ public class GUI extends JFrame{
     CardLayout cardLayout;
     public static final int WIDTH = 600, HEIGHT = 600;
 
+
     public GUI(MangaList mangaList) {
+        setTitle("Manyak");
+        ImageIcon icon = new ImageIcon("src/designs/manyak-icon.jpg");
+        setIconImage(icon.getImage());
         this.mangaList = mangaList;
         create();
         revalidate();
     }
 
     public GUI (){
+        setTitle("Manyak");
+        setLayout(new BorderLayout());
+        JPanel jPanel = new JPanel(new BorderLayout());
+        setContentPane(jPanel);
+        ImageIcon icon = new ImageIcon("src/designs/manyak-icon.jpg");
+        setIconImage(icon.getImage());
         setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - WIDTH) / 2, ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - HEIGHT) / 2, WIDTH, HEIGHT);
         setVisible(true);
-        setLayout(new GridLayout(1,1));
-        add(new JLabel("loading...",SwingConstants.CENTER));
+        JLabel jLabel = new JLabel(icon);
+        jLabel.setBorder(new EmptyBorder(100, 100, 100, 100));
+        jPanel.add(jLabel,BorderLayout.CENTER);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 

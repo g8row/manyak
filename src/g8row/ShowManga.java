@@ -4,6 +4,8 @@ import designs.GButton;
 import designs.RoundedBorder;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
@@ -12,14 +14,36 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class ShowManga extends JPanel {
-    public ShowManga(Manga manga) {
+    Manga manga;
+
+    public JLabel coverArt(){
+        JLabel jLabel = new JLabel(new ImageIcon(manga.cover.getScaledInstance(100, 150, Image.SCALE_FAST)));
+        jLabel.setBorder(new LineBorder(new Color(120, 82, 255),2,true));
+        return jLabel;
+
+    }
+    public JPanel titlePanel(){
+        JPanel jPanel = new JPanel(new BorderLayout());
+        //jPanel.setPreferredSize(new Dimension(300,200));
+        jPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JLabel title = new JLabel(manga.mangaAttributes.title);
+
+        title.setFont(new Font("Tahoma", Font.BOLD, 17));
+        JLabel moreInfo = new JLabel("<html><p style=\"width:300px\">"+manga.mangaAttributes.toString()+"</p></html>");
+        //moreInfo.setPreferredSize(new Dimension(250,200));
+        moreInfo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        jPanel.add(title,BorderLayout.NORTH);
+        jPanel.add(moreInfo, BorderLayout.CENTER);
+        return jPanel;
+    }
+    public JPanel descriptionsPanel(){
         JTextPane jTextPane;
         JPanel buttons;
-
-        add(new JLabel(new ImageIcon(manga.cover.getScaledInstance(100, 150, Image.SCALE_FAST))));
+        JPanel descriptions = new JPanel(new BorderLayout());
+        descriptions.setBorder(new EmptyBorder(10, 10, 10, 10));
         jTextPane = new JTextPane();
         jTextPane.setContentType("text/html");
-        buttons = new JPanel();
+        buttons = new JPanel(new GridLayout(1,manga.mangaAttributes.descriptions.keySet().size()));
         for (String key : manga.mangaAttributes.descriptions.keySet()) {
             if (manga.mangaAttributes.descriptions.get(key) != null) {
                 GButton descB = new GButton(key);
@@ -46,10 +70,24 @@ public class ShowManga extends JPanel {
             e.printStackTrace();
         }
         JScrollPane jScrollPane = new JScrollPane(jTextPane);
-        jScrollPane.setPreferredSize(new Dimension(400, 400));
-        add(buttons);
-        add(jScrollPane);
+        //jScrollPane.setPreferredSize(new Dimension(400, 400));
+        descriptions.add(buttons, BorderLayout.NORTH);
+        descriptions.add(jScrollPane, BorderLayout.CENTER);
+        return descriptions;
+    }
+
+    public ShowManga(Manga manga) {
+        this.manga = manga;
+        setLayout(new BorderLayout());
+        JPanel top = new JPanel(new BorderLayout());
         GButton backButton = new GButton("Back");
+        top.add(backButton,BorderLayout.EAST);
+        top.add(coverArt(),BorderLayout.WEST);
+        top.add(titlePanel(), BorderLayout.CENTER);
+        add(top,BorderLayout.NORTH);
+        add(descriptionsPanel(),BorderLayout.CENTER);
+
+
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -60,8 +98,7 @@ public class ShowManga extends JPanel {
                 revalidate();
             }
         });
-        add(backButton);
-        revalidate();
+
 
         revalidate();
     }

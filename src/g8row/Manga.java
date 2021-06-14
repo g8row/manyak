@@ -125,24 +125,23 @@ class MangaAttributes{
 
     @Override
     public String toString() {
-        return "MangaAttributes{" +
-                "title='" + title + '\'' +
-                ", altTitles=" + altTitles +
-                ", description='" + descriptions + '\'' +
-                ", isLocked=" + isLocked +
-                ", links=" + links +
-                ", originalLanguage='" + originalLanguage + '\'' +
-                ", lastVolume='" + lastVolume + '\'' +
-                ", lastChapter='" + lastChapter + '\'' +
-                ", publicationDemographic='" + publicationDemographic + '\'' +
-                ", status='" + status + '\'' +
-                ", year=" + year +
-                ", contentRating='" + contentRating + '\'' +
-                ", tags=" + tags +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", relationships=" + Arrays.toString(relationships) +
-                '}';
+        return  title +
+                //", altTitles=" + altTitles +
+                //", description='" + descriptions + '\'' +
+                //", isLocked=" + isLocked +
+                //", links=" + links +
+                ", Original Language: " + originalLanguage +
+                ", Last Volume: " + lastVolume +
+                ", Last Chapter:" + lastChapter +
+                ", Demographic: " + publicationDemographic +
+                ", Status: " + status +
+                ", Year: " + year +
+                ", Content Rating: " + contentRating +
+                //", Tags: " + tags +
+                ", Date Created: " + createdAt +
+                ", Last updated: " + updatedAt
+                //", relationships=" + Arrays.toString(relationships) +
+                ;
     }
 }
 public class Manga {

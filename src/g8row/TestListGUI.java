@@ -37,6 +37,7 @@ public class TestListGUI extends JPanel {
         setLayout(new GridLayout(numButtons,1));
         setPreferredSize(new Dimension(600,600));
         showList(mangaList,0);
+        JPanel buttons = new JPanel(new GridLayout(1,2));
         GButton prev = new GButton("Prev Page");
         prev.setBold();
         GButton next = new GButton("Next Page");
@@ -45,14 +46,14 @@ public class TestListGUI extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 removeAll();
+                buttons.removeAll();
                 page--;
                 if(page!=0){
-                    add(prev);
-                }else{
-                    setLayout(new GridLayout(--numButtons,1));
+                    buttons.add(prev);
                 }
                 showList(mangaList,page*onScreen);
-                add(next);
+                buttons.add(next);
+                add(buttons);
                 revalidate();
             }
         });
@@ -62,17 +63,15 @@ public class TestListGUI extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     removeAll();
+                    buttons.removeAll();
                     page++;
-
-                    if(page==1){
-                        setLayout(new GridLayout(++numButtons,1));
-                    }
-                    add(prev);
+                    buttons.add(prev);
                     if(mangaList.mangaArray.size()<(page+1)*onScreen) {
                         mangaList.parse(5, page * onScreen);
                     }
                     showList(mangaList,page*onScreen);
-                    add(next);
+                    buttons.add(next);
+                    add(buttons);
                     revalidate();
 
                 } catch (IOException ioException) {
@@ -80,7 +79,8 @@ public class TestListGUI extends JPanel {
                 }
             }
         });
-        add(next);
+        buttons.add(next);
+        add(buttons);
         revalidate();
     }
 }
