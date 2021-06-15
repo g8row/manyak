@@ -21,8 +21,8 @@ public class MangaList {
         URL url = new URL("https://api.mangadex.org/manga?limit=" + limit + "&offset=" + offset);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(500);
+        connection.setReadTimeout(500);
 
         if(connection.getResponseCode() > 299){
             reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));

@@ -16,7 +16,7 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 
-class Descriptions extends HashMap<String,Object>{
+class Descriptions extends TreeMap<String,Object>{
     JSONObject descriptionsJSON;
     public Descriptions(JSONObject descriptionsJSON) {
         this.descriptionsJSON = descriptionsJSON;
@@ -45,8 +45,8 @@ class Descriptions extends HashMap<String,Object>{
             //System.out.println(value);
             put(temp.getKey(),value);
         }
-
     }
+
     /*@Override
     public String toString(){
         StringBuilder str = new StringBuilder();
@@ -144,6 +144,7 @@ class MangaAttributes{
                 ;
     }
 }
+
 public class Manga {
     String id;
     String type;
@@ -167,8 +168,8 @@ public class Manga {
         URL url = new URL(link);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(500);
+        connection.setReadTimeout(500);
 
         if(connection.getResponseCode() > 299){
             reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));

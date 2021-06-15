@@ -12,9 +12,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         GUI gui = new GUI();
-        MangaList list = new MangaList();
-        gui.dispose();
+        MangaList list = new MangaList();gui.dispose();
         gui = new GUI(list);
+
         //System.out.println(list.mangaArray.get(1).mangaAttributes.descriptions);
         //System.out.println(list.mangaArray.get(0).mangaAttributes.descriptions.get("fr"));
         /*for(int i = 0;i<list.mangaArray.size();i++) {
