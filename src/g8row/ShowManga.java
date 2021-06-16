@@ -1,7 +1,6 @@
 package g8row;
 
 import designs.GButton;
-import designs.RoundedBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -70,7 +69,6 @@ public class ShowManga extends JPanel {
             e.printStackTrace();
         }
         JScrollPane jScrollPane = new JScrollPane(jTextPane);
-        //jScrollPane.setPreferredSize(new Dimension(400, 400));
         descriptions.add(buttons, BorderLayout.NORTH);
         descriptions.add(jScrollPane, BorderLayout.CENTER);
         return descriptions;
@@ -87,7 +85,6 @@ public class ShowManga extends JPanel {
         add(top,BorderLayout.NORTH);
         add(descriptionsPanel(),BorderLayout.CENTER);
 
-
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,7 +96,22 @@ public class ShowManga extends JPanel {
             }
         });
 
-
+        GButton read = new GButton("Start Reading");
+        read.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel parent = (JPanel) getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                try {
+                    parent.add(new ShowVolumes(manga),"volumes");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                layout.show(parent,"volumes");
+                revalidate();
+            }
+        });
+        add(read, BorderLayout.SOUTH);
         revalidate();
     }
 }

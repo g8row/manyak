@@ -1,21 +1,9 @@
 package g8row;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.*;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 public class GUI extends JFrame{
     final JPanel gui = new JPanel();
@@ -51,14 +39,11 @@ public class GUI extends JFrame{
     public void create() throws IOException {
         cardLayout = new CardLayout();
         gui.setLayout(cardLayout);
-        //JPanel menu = new TestListGUI(mangaList);
-        JPanel volumes = new ShowChapters(mangaList.get(0));
-        //gui.add(menu, "menu");
-        gui.add(volumes, "volumes");
+        JPanel menu = new TestListGUI(mangaList);
+        gui.add(menu, "menu");
         setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - WIDTH) / 2, ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - HEIGHT) / 2, WIDTH, HEIGHT);
         setVisible(true);
-        //cardLayout.show(gui,"menu");
-        cardLayout.show(gui,"volumes");
+        cardLayout.show(gui,"menu");
         setContentPane(gui);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

@@ -14,7 +14,7 @@ public class Main {
         GUI gui = new GUI();
         MangaList list = new MangaList();
         gui.dispose();
-        //gui = new GUI(list);
+        gui = new GUI(list);
 
         //System.out.println(list.mangaArray.get(1).mangaAttributes.descriptions);
         //System.out.println(list.mangaArray.get(0).mangaAttributes.descriptions.get("fr"));

@@ -75,7 +75,8 @@ class Chapter implements Comparable<Chapter>{
 
     @Override
     public int compareTo(Chapter o) {
-        return this.chapter.compareTo(o.chapter);
+
+        return Double.compare(Double.parseDouble(this.chapter), Double.parseDouble(o.chapter));
     }
 }
 
@@ -92,7 +93,8 @@ class Volume{
     }
 
     public void parseChapters(Manga manga, String language) throws IOException {
-        for(Chapter chapter: chapters) {
+        Chapter chapter = chapters.get(0);
+        //for(Chapter chapter: chapters) {
             BufferedReader reader;
             HttpURLConnection connection;
             StringBuilder responseContent = new StringBuilder();
@@ -142,7 +144,7 @@ class Volume{
 
             chapter.addAttributes(title,volume,translatedLanguage,hash,data,dataSaver,uploader,version,createdAt,updatedAt,publishAt);
             reader.close();
-        }
+        //}
     }
     @Override
     public String toString() {
@@ -155,7 +157,11 @@ class Volume{
 }
 
 class Volumes extends ArrayList <Volume>{
+    Manga manga;
+    String language;
     public Volumes(Manga manga, String language) throws IOException {
+        this.manga = manga;
+        this.language = language;
         BufferedReader reader;
         HttpURLConnection connection;
         StringBuilder responseContent = new StringBuilder();
@@ -192,9 +198,12 @@ class Volumes extends ArrayList <Volume>{
                 chapters1.add(chapter1);
             }
             Volume volume1 = new Volume((String) volume.get("volume"),(Integer) volume.get("count"),chapters1);
-            volume1.parseChapters(manga,language);
-            System.out.println(volume1);
             add(volume1);
+        }
+    }
+    public void parseVolumes() throws IOException {
+        for (Volume volume: this){
+            volume.parseChapters(manga,language);
         }
     }
 }
