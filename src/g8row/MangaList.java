@@ -11,9 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MangaList {
-    ArrayList<Manga> mangaArray;
-
+public class MangaList extends ArrayList<Manga>{
     public void parse(int limit, int offset) throws IOException {
         BufferedReader reader;
         HttpURLConnection connection;
@@ -120,12 +118,12 @@ public class MangaList {
             MangaAttributes Attributes = new MangaAttributes(title, altTitles, descriptions, isLocked, originalLanguage,
                     lastVolume, lastChapter, publicationDemographic, status, contentRating, createdAt, updatedAt);
 
-            mangaArray.add(new Manga(id, type, Attributes));
+            add(new Manga(id, type, Attributes));
         }
     }
 
     public MangaList() throws IOException {
-        mangaArray = new ArrayList<>();
+        ensureCapacity(5);
         parse(5,0);
     }
 }

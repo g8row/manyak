@@ -24,7 +24,7 @@ public class GUI extends JFrame{
     public static final int WIDTH = 600, HEIGHT = 600;
 
 
-    public GUI(MangaList mangaList) {
+    public GUI(MangaList mangaList) throws IOException {
         setTitle("Manyak");
         ImageIcon icon = new ImageIcon("src/designs/manyak-icon.jpg");
         setIconImage(icon.getImage());
@@ -48,14 +48,17 @@ public class GUI extends JFrame{
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void create() {
+    public void create() throws IOException {
         cardLayout = new CardLayout();
         gui.setLayout(cardLayout);
-        JPanel menu = new TestListGUI(mangaList);
-        gui.add(menu, "menu");
+        //JPanel menu = new TestListGUI(mangaList);
+        JPanel volumes = new ShowChapters(mangaList.get(0));
+        //gui.add(menu, "menu");
+        gui.add(volumes, "volumes");
         setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - WIDTH) / 2, ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - HEIGHT) / 2, WIDTH, HEIGHT);
         setVisible(true);
-        cardLayout.show(gui,"menu");
+        //cardLayout.show(gui,"menu");
+        cardLayout.show(gui,"volumes");
         setContentPane(gui);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

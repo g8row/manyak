@@ -16,7 +16,7 @@ public class TestListGUI extends JPanel {
 
     public void showList(MangaList mangaList, int offset){
         for(int i = offset; i < onScreen*(page+1); i++){
-            Manga manga = mangaList.mangaArray.get(i);
+            Manga manga = mangaList.get(i);
             GButton mangaB = new GButton(manga.mangaAttributes.title);
             mangaB.addActionListener(new ActionListener() {
                 @Override
@@ -33,7 +33,7 @@ public class TestListGUI extends JPanel {
     }
 
     public TestListGUI(MangaList mangaList){
-        numButtons = mangaList.mangaArray.size()+1;
+        numButtons = mangaList.size()+1;
         setLayout(new GridLayout(numButtons,1));
         setPreferredSize(new Dimension(600,600));
         showList(mangaList,0);
@@ -66,7 +66,7 @@ public class TestListGUI extends JPanel {
                     buttons.removeAll();
                     page++;
                     buttons.add(prev);
-                    if(mangaList.mangaArray.size()<(page+1)*onScreen) {
+                    if(mangaList.size()<(page+1)*onScreen) {
                         mangaList.parse(5, page * onScreen);
                     }
                     showList(mangaList,page*onScreen);
