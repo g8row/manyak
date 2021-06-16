@@ -1,3 +1,0 @@
-https://api.mangadex.org/account/create?username=g8rowtest&password=test1234&email=g8rowtest@gmail.com
-{"result":"error","errors":[{"id":"1fe0f636-0f82-502b-949b-f46962b3e9ab","status":412,"title":"captcha_required_exception","detail":"To access this resource, you need to solve a captcha.","context":
-{"siteKey":"6LflOrIaAAAAACcpRSiKQlt_X6bq-QcVjHTG1diJ"}}]}
