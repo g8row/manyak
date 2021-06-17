@@ -42,6 +42,20 @@ public class ShowVolumes extends JPanel{
                     }else {
                         jButton = new GButton(chapter.chapter);
                     }
+                    jButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JPanel parent = (JPanel) getParent();
+                            CardLayout layout = (CardLayout) parent.getLayout();
+                            try {
+                                parent.add(new ShowPages(chapter),"chapter");
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            layout.show(parent,"chapter");
+                            revalidate();
+                        }
+                    });
                     jPanel.add(jButton);
                 }
                 jScrollPane = new JScrollPane(jPanel);

@@ -91,7 +91,7 @@ public class ShowManga extends JPanel {
                 JPanel parent = (JPanel) getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "menu");
-                layout.removeLayoutComponent(getParent().getParent());
+                layout.removeLayoutComponent(getParent());
                 revalidate();
             }
         });
