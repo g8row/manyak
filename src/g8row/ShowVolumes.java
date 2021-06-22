@@ -21,7 +21,7 @@ public class ShowVolumes extends JPanel{
         setLayout(new BorderLayout());
         volumes = new Volumes(manga,"en");
         //jScrollPane = new JScrollPane();
-        volumes.parseVolumes();
+        //volumes.parseVolumes();
         jComboBox = new JComboBox<>();
         jComboBox.setEditable(true);
         jComboBox.setSelectedItem("Select a volume:");
@@ -32,9 +32,16 @@ public class ShowVolumes extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 JPanel jPanel;
                 try {
-                    remove(jScrollPane);
+                    volumesPanel.remove(jScrollPane);
                 }catch (Exception ex){
                     //ex.printStackTrace();
+                }
+                if(!volumes.get(jComboBox.getSelectedIndex()).parsed) {
+                    try {
+                        volumes.get(jComboBox.getSelectedIndex()).parseChapters(volumes.manga, volumes.language);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }
                 jPanel = new JPanel(new GridLayout(volumes.get(jComboBox.getSelectedIndex() ).chapters.size(), 1));
                 for (Chapter chapter : volumes.get(jComboBox.getSelectedIndex()).chapters) {

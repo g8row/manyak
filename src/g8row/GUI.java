@@ -7,16 +7,16 @@ import java.io.IOException;
 
 public class GUI extends JFrame{
     final JPanel gui = new JPanel();
-    MangaList mangaList;
+    Popular popular;
     CardLayout cardLayout;
     public static final int WIDTH = 600, HEIGHT = 600;
 
 
-    public GUI(MangaList mangaList) throws IOException {
+    public GUI(Popular popular) throws IOException {
         setTitle("Manyak");
         ImageIcon icon = new ImageIcon("src/designs/manyak-icon.jpg");
         setIconImage(icon.getImage());
-        this.mangaList = mangaList;
+        this.popular = popular;
         create();
         revalidate();
     }
@@ -39,7 +39,7 @@ public class GUI extends JFrame{
     public void create() throws IOException {
         cardLayout = new CardLayout();
         gui.setLayout(cardLayout);
-        JPanel menu = new TestListGUI(mangaList);
+        JPanel menu = new ShowList(popular);
         gui.add(menu, "menu");
         setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - WIDTH) / 2, ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - HEIGHT) / 2, WIDTH, HEIGHT);
         setVisible(true);

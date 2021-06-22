@@ -1,6 +1,7 @@
 package g8row;
 
 import designs.GButton;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,15 +9,41 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ShowPages extends JPanel {
-    Chapter chapter;
     int page=0;
     JScrollPane jScrollPane;
     public ShowPages (Chapter chapter) throws IOException {
+        BufferedReader reader;
+        HttpURLConnection connection;
+        StringBuilder responseContent = new StringBuilder();
+        URL url = new URL("https://api.mangadex.org/at-home/server/" + chapter.id);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(500);
+        connection.setReadTimeout(500);
+
+        if(connection.getResponseCode() > 299){
+            reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            String line;
+            while ((line = reader.readLine())!=null){
+                responseContent.append(line);
+            }
+        }else{
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = reader.readLine())!=null){
+                responseContent.append(line);
+            }
+        }
+        reader.close();
+        JSONObject mangaResponse = new JSONObject(responseContent.toString());
+        chapter.setAtHomeLocation(mangaResponse.getString("baseUrl"));
         jScrollPane = new JScrollPane(showPage(chapter));
         setLayout(new BorderLayout());
 
@@ -80,8 +107,7 @@ public class ShowPages extends JPanel {
         add(buttons, BorderLayout.SOUTH);
     }
     public JLabel showPage(Chapter chapter) throws IOException {
-        String link = "https://uploads.mangadex.org/data/" + chapter.hash + "/" + chapter.data.get(page);
-        System.out.println(link);
+        String link = chapter.atHomeLocation + "/data/" + chapter.hash + "/" + chapter.data.get(page);
         URL url = new URL(link);
         BufferedImage page = ImageIO.read(url);
         return new JLabel(new ImageIcon(page));

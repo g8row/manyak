@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.*;
 
 class Chapter implements Comparable<Chapter>{
+    String id;
     String chapter;
     int count;
     String title;
@@ -26,16 +27,21 @@ class Chapter implements Comparable<Chapter>{
     String createdAt;
     String updatedAt;
     String publishAt;
+    String atHomeLocation;
+
+    public void setAtHomeLocation(String atHomeLocation) {
+        this.atHomeLocation = atHomeLocation;
+    }
 
     public Chapter(String chapter, int count) {
         this.chapter = chapter;
         this.count = count;
     }
 
-    public void addAttributes(String title, String volume, String translatedLanguage, String hash,
+    public void addAttributes(String id, String title, String volume, String translatedLanguage, String hash,
                               ArrayList<Object> data, ArrayList<Object> dataSaver, String uploader, int version,
                               String createdAt, String updatedAt, String publishAt) {
-
+        this.id=id;
         this.title = title;
         this.volume = volume;
         this.translatedLanguage = translatedLanguage;
@@ -85,6 +91,8 @@ class Volume{
     String volume;
     int count;
     ArrayList<Chapter> chapters;
+    boolean parsed = false;
+
 
     public Volume(String volume, int count, ArrayList<Chapter> chapters) {
         this.chapters = chapters;
@@ -94,12 +102,10 @@ class Volume{
     }
 
     public void parseChapters(Manga manga, String language) throws IOException {
-        Chapter chapter = chapters.get(0);
-        //for(Chapter chapter: chapters) {
             BufferedReader reader;
             HttpURLConnection connection;
             StringBuilder responseContent = new StringBuilder();
-            String link = "https://api.mangadex.org/chapter?manga=" + manga.id + "&volume=" + volume + "&chapter=" + chapter.chapter + "&translatedLanguage[]=" + language;
+            String link = "https://api.mangadex.org/chapter?manga=" + manga.id + "&volume[]=" + volume + "&translatedLanguage[]=" + language + "&limit=" + count + "&order[chapter]=asc";
             URL url = new URL(link);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -119,38 +125,41 @@ class Volume{
                     responseContent.append(line);
                 }
             }
-
             JSONObject chapterResponse = new JSONObject(responseContent.toString());
             JSONArray results = chapterResponse.getJSONArray("results");
-            JSONObject chapterResult = results.getJSONObject(0);
-            JSONObject dataResult = chapterResult.getJSONObject("data");
-            JSONObject attributes = dataResult.getJSONObject("attributes");
-            String title = attributes.getString("title");
-            String volume;
-            try {
-                volume = attributes.getString("volume");
-            }catch(JSONException exception){
-                volume = null;
-            }
-            String translatedLanguage = attributes.getString("translatedLanguage");
-            String hash = attributes.getString("hash");
-            ArrayList<Object> data = (ArrayList<Object>) attributes.getJSONArray("data").toList();
+            for(int i=0;i<chapters.size();i++) {
+                JSONObject chapterResult = results.getJSONObject(i);
+                JSONObject dataResult = chapterResult.getJSONObject("data");
+                String id = dataResult.getString("id");
+                JSONObject attributes = dataResult.getJSONObject("attributes");
+                String title = attributes.getString("title");
+                String volume;
+                try {
+                    volume = attributes.getString("volume");
+                } catch (JSONException exception) {
+                    volume = null;
+                }
+                String translatedLanguage = attributes.getString("translatedLanguage");
+                String hash = attributes.getString("hash");
+                ArrayList<Object> data = (ArrayList<Object>) attributes.getJSONArray("data").toList();
 
-            ArrayList<Object> dataSaver = (ArrayList<Object>) attributes.getJSONArray("dataSaver").toList();
-            String uploader;
-            try {
-                uploader = attributes.getString("uploader");
-            }catch (JSONException e){
-                uploader = null;
-            }
-            int version = attributes.getInt("version");
-            String createdAt = attributes.getString("createdAt");
-            String updatedAt = attributes.getString("updatedAt");
-            String publishAt = attributes.getString("publishAt");
+                ArrayList<Object> dataSaver = (ArrayList<Object>) attributes.getJSONArray("dataSaver").toList();
+                String uploader;
+                try {
+                    uploader = attributes.getString("uploader");
+                } catch (JSONException e) {
+                    uploader = null;
+                }
+                int version = attributes.getInt("version");
+                String createdAt = attributes.getString("createdAt");
+                String updatedAt = attributes.getString("updatedAt");
+                String publishAt = attributes.getString("publishAt");
 
-            chapter.addAttributes(title,volume,translatedLanguage,hash,data,dataSaver,uploader,version,createdAt,updatedAt,publishAt);
-            reader.close();
-        //}
+                chapters.get(i).addAttributes(id,title, volume, translatedLanguage, hash, data, dataSaver, uploader, version, createdAt, updatedAt, publishAt);
+                reader.close();
+                parsed = true;
+            }
+
     }
     @Override
     public String toString() {

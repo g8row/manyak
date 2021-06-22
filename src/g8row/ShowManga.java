@@ -26,7 +26,7 @@ public class ShowManga extends JPanel {
         JPanel jPanel = new JPanel(new BorderLayout());
         //jPanel.setPreferredSize(new Dimension(300,200));
         jPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        JLabel title = new JLabel(manga.mangaAttributes.title);
+        JLabel title = new JLabel(manga.title);
 
         title.setFont(new Font("Tahoma", Font.BOLD, 17));
         JLabel moreInfo = new JLabel("<html><p style=\"width:300px\">"+manga.mangaAttributes.toString()+"</p></html>");

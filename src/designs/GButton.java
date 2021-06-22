@@ -22,6 +22,5 @@ public class GButton extends JButton {
     }
     public void setBold(){
         setFont(new Font("Tahoma", Font.BOLD, 12));
-
     }
 }
