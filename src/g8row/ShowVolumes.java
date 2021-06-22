@@ -1,5 +1,6 @@
 package g8row;
 
+import designs.BackButton;
 import designs.GButton;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class ShowVolumes extends JPanel{
     JComboBox<String> jComboBox;
 
     public ShowVolumes(Manga manga) throws IOException {
+        JPanel volumesPanel = new JPanel(new BorderLayout());
         setLayout(new BorderLayout());
         volumes = new Volumes(manga,"en");
         //jScrollPane = new JScrollPane();
@@ -59,7 +61,7 @@ public class ShowVolumes extends JPanel{
                     jPanel.add(jButton);
                 }
                 jScrollPane = new JScrollPane(jPanel);
-                add(jScrollPane, BorderLayout.CENTER);
+                volumesPanel.add(jScrollPane, BorderLayout.CENTER);
                 revalidate();
             }
         });
@@ -68,11 +70,11 @@ public class ShowVolumes extends JPanel{
             jComboBox.addItem("Volume " + volume.volume);
         }
 
-        add(jComboBox, BorderLayout.NORTH);
+        volumesPanel.add(jComboBox, BorderLayout.NORTH);
 
-        GButton backButton = new GButton("Back");
-        add(backButton,BorderLayout.SOUTH);
-        backButton.addActionListener(new ActionListener() {
+        BackButton backButtonPanel = new BackButton();
+        add(backButtonPanel,BorderLayout.NORTH);
+        backButtonPanel.backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JPanel parent = (JPanel) getParent();
@@ -82,5 +84,6 @@ public class ShowVolumes extends JPanel{
                 revalidate();
             }
         });
+        add(volumesPanel);
     }
 }

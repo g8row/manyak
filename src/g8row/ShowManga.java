@@ -1,5 +1,6 @@
 package g8row;
 
+import designs.BackButton;
 import designs.GButton;
 
 import javax.swing.*;
@@ -77,15 +78,14 @@ public class ShowManga extends JPanel {
     public ShowManga(Manga manga) {
         this.manga = manga;
         setLayout(new BorderLayout());
+        JPanel mangaPanel = new JPanel(new BorderLayout());
+        BackButton backButtonPanel = new BackButton();
         JPanel top = new JPanel(new BorderLayout());
-        GButton backButton = new GButton("Back");
-        top.add(backButton,BorderLayout.EAST);
         top.add(coverArt(),BorderLayout.WEST);
         top.add(titlePanel(), BorderLayout.CENTER);
-        add(top,BorderLayout.NORTH);
-        add(descriptionsPanel(),BorderLayout.CENTER);
-
-        backButton.addActionListener(new ActionListener() {
+        mangaPanel.add(top,BorderLayout.NORTH);
+        mangaPanel.add(descriptionsPanel(),BorderLayout.CENTER);
+        backButtonPanel.backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JPanel parent = (JPanel) getParent();
@@ -95,7 +95,6 @@ public class ShowManga extends JPanel {
                 revalidate();
             }
         });
-
         GButton read = new GButton("Start Reading");
         read.addActionListener(new ActionListener() {
             @Override
@@ -111,7 +110,9 @@ public class ShowManga extends JPanel {
                 revalidate();
             }
         });
-        add(read, BorderLayout.SOUTH);
+        mangaPanel.add(read, BorderLayout.SOUTH);
+        add(backButtonPanel, BorderLayout.NORTH);
+        add(mangaPanel, BorderLayout.CENTER);
         revalidate();
     }
 }

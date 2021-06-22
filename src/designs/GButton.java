@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class GButton extends JButton {
     public GButton(){
-        setText("button");
+        //setText("button");
         setBackground(new Color(120, 82, 255));
         setForeground(Color.WHITE);
         setFont(new Font("Tahoma", Font.PLAIN, 12));
