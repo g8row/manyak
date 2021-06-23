@@ -87,7 +87,7 @@ class Chapter implements Comparable<Chapter>{
     }
 }
 
-class Volume{
+class Volume implements Comparable <Volume>{
     String volume;
     int count;
     ArrayList<Chapter> chapters;
@@ -169,6 +169,26 @@ class Volume{
                 ", \nchapters=" + chapters +
                 '}';
     }
+
+    @Override
+    public int compareTo(Volume o) {
+        try {
+            return Double.compare(Double.parseDouble(volume), Double.parseDouble(o.volume));
+        }catch (Exception e){
+
+        }
+        try {
+            Double.parseDouble(o.volume);
+        }catch (Exception e){
+            return -1;
+        }
+        try {
+            Double.parseDouble(volume);
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
 }
 
 class Volumes extends ArrayList <Volume>{
@@ -184,8 +204,8 @@ class Volumes extends ArrayList <Volume>{
         URL url = new URL(link);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setConnectTimeout(500);
-        connection.setReadTimeout(500);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
 
         if (connection.getResponseCode() > 299) {
             reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
@@ -198,31 +218,41 @@ class Volumes extends ArrayList <Volume>{
             String line;
             while ((line = reader.readLine()) != null) {
                 responseContent.append(line);
+
             }
         }
         reader.close();
         JSONObject volumesResponse = new JSONObject(responseContent.toString());
+        //System.out.println(responseContent.toString());
         try {
             JSONObject volumes = volumesResponse.getJSONObject("volumes");
             for (Map.Entry<String, Object> entry : volumes.toMap().entrySet()) {
                 HashMap volume = (HashMap) entry.getValue();
-                HashMap<String, Object> chapters = (HashMap<String, Object>) volume.get("chapters");
-                ArrayList<Chapter> chapters1 = new ArrayList<>();
-                for (Map.Entry<String, Object> entry1 : chapters.entrySet()) {
-                    HashMap chapter = (HashMap) entry1.getValue();
-                    Chapter chapter1 = new Chapter((String) chapter.get("chapter"), (int) chapter.get("count"));
-                    chapters1.add(chapter1);
+                //System.out.println(volume.get("chapters"));
+                try {
+                    HashMap<String, Object> chapters = (HashMap<String, Object>) volume.get("chapters");
+
+                    ArrayList<Chapter> chapters1 = new ArrayList<>();
+                    for (Map.Entry<String, Object> entry1 : chapters.entrySet()) {
+                        HashMap chapter = (HashMap) entry1.getValue();
+                        Chapter chapter1 = new Chapter((String) chapter.get("chapter"), (int) chapter.get("count"));
+                        chapters1.add(chapter1);
+                    }
+                    Volume volume1 = new Volume((String) volume.get("volume"), (Integer) volume.get("count"), chapters1);
+                    add(volume1);
+                }catch (Exception e){
+                    //e.printStackTrace();
                 }
-                Volume volume1 = new Volume((String) volume.get("volume"), (Integer) volume.get("count"), chapters1);
-                add(volume1);
             }
         } catch (JSONException ex) {
             //ex.printStackTrace();
         }
+        Collections.sort(this);
     }
     public void parseVolumes() throws IOException {
         for (Volume volume: this){
             volume.parseChapters(manga,language);
         }
+
     }
 }

@@ -1,5 +1,6 @@
 package g8row;
 
+import designs.BackButton;
 import designs.GButton;
 
 import javax.swing.*;
@@ -13,35 +14,42 @@ public class ShowList extends JPanel {
     int page=0;
     int onScreen=5;
     int numButtons;
+    JPanel jPanel;
 
-    public void showList(ArrayList<Manga> list, int offset){
+    public void showNewPage(ArrayList<Manga> list, int offset){
         for(int i = offset; i < onScreen*(page+1); i++){
-            Manga manga = list.get(i);
-            GButton mangaB = new GButton(manga.title);
-            mangaB.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        manga.parseMangaAttributes();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
+            try {
+                Manga manga = list.get(i);
+                GButton mangaB = new GButton(manga.title);
+                mangaB.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            manga.parseMangaAttributes();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                        JPanel parent = (JPanel) getParent();
+                        CardLayout layout = (CardLayout) parent.getLayout();
+                        parent.add(new ShowManga(manga), "manga");
+                        layout.show(parent, "manga");
+                        revalidate();
                     }
-                    JPanel parent = (JPanel) getParent();
-                    CardLayout layout = (CardLayout)parent.getLayout();
-                    parent.add(new ShowManga(manga),"manga");
-                    layout.show(parent,"manga");
-                    revalidate();
-                }
-            });
-            add(mangaB);
+                });
+                jPanel.add(mangaB);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
-    public ShowList(Popular popular){
-        numButtons = popular.size()+1;
-        setLayout(new GridLayout(numButtons,1));
-        setPreferredSize(new Dimension(600,600));
-        showList(popular,0);
+    public ShowList(MangaList mangaList){
+        setLayout(new BorderLayout());
+        jPanel = new JPanel();
+        numButtons = mangaList.size()+1;
+        jPanel.setLayout(new GridLayout(numButtons,1));
+        jPanel.setPreferredSize(new Dimension(600,600));
+        showNewPage(mangaList,0);
         JPanel buttons = new JPanel(new GridLayout(1,2));
         GButton prev = new GButton("Prev Page");
         prev.setBold();
@@ -50,15 +58,15 @@ public class ShowList extends JPanel {
         prev.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeAll();
+                jPanel.removeAll();
                 buttons.removeAll();
                 page--;
                 if(page!=0){
                     buttons.add(prev);
                 }
-                showList(popular,page*onScreen);
+                showNewPage(mangaList,page*onScreen);
                 buttons.add(next);
-                add(buttons);
+                jPanel.add(buttons);
                 revalidate();
             }
         });
@@ -67,69 +75,43 @@ public class ShowList extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    removeAll();
+                    jPanel.removeAll();
                     buttons.removeAll();
                     page++;
                     buttons.add(prev);
-                    if(popular.size()<(page+1)*onScreen) {
-                        popular.parse(5, page * onScreen);
+                    if(mangaList.size()<(page+1)*onScreen) {
+                        if(mangaList.titleSearch.equals("")) {
+                            mangaList.parse(5, page * onScreen);
+                        }else{
+                            mangaList.parse(5, page * onScreen, mangaList.titleSearch);
+                        }
                     }
-                    showList(popular,page*onScreen);
-                    buttons.add(next);
-                    add(buttons);
-                    revalidate();
 
+                    showNewPage(mangaList,page*onScreen);
+
+                    buttons.add(next);
+                    jPanel.add(buttons);
+                    buttons.revalidate();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
             }
         });
         buttons.add(next);
-        add(buttons);
-        revalidate();
-    }
-    public ShowList(Search search){
-        numButtons = search.size()+1;
-        setLayout(new GridLayout(numButtons,1));
-        setPreferredSize(new Dimension(600,600));
-        showList(search,0);
-        JPanel buttons = new JPanel(new GridLayout(1,2));
-        GButton prev = new GButton("Prev Page");
-        prev.setBold();
-        GButton next = new GButton("Next Page");
-        next.setBold();
-        prev.addActionListener(new ActionListener() {
+
+        jPanel.add(buttons);
+        BackButton backButton = new BackButton();
+        backButton.backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeAll();
-                buttons.removeAll();
-                page--;
-                if(page!=0){
-                    buttons.add(prev);
-                }
-                showList(search,page*onScreen);
-                buttons.add(next);
-                add(buttons);
+                JPanel parent = (JPanel) getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "search");
+                layout.removeLayoutComponent(getParent());
                 revalidate();
             }
         });
-
-        next.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                    removeAll();
-                    buttons.removeAll();
-                    page++;
-                    buttons.add(prev);
-
-                    showList(search,page*onScreen);
-                    buttons.add(next);
-                    add(buttons);
-                    revalidate();
-            }
-        });
-        buttons.add(next);
-        add(buttons);
-        revalidate();
+        add(backButton, BorderLayout.NORTH);
+        add(jPanel, BorderLayout.CENTER);
     }
 }

@@ -90,7 +90,7 @@ public class ShowManga extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JPanel parent = (JPanel) getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
-                layout.show(parent, "menu");
+                layout.show(parent, "list");
                 layout.removeLayoutComponent(getParent());
                 revalidate();
             }
